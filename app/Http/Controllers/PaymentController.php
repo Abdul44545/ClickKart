@@ -5,6 +5,7 @@ use Stripe\Stripe;
 use Stripe\Charge;
 use Illuminate\Http\Request;
 use App\Models\Ordercompelete;
+use App\Models\Card;
 class PaymentController extends Controller
 {
     //
@@ -22,9 +23,14 @@ class PaymentController extends Controller
             ]);
 
                 if ($charge->status === 'succeeded') {
+              $getCardData = Card::where('user_id', $request->usrt_id)->get();
+    
+                foreach ($getCardData as $card) {
+                    $card->delete();
+                }
                Ordercompelete::where('booking_key', $request->group_id)->update(['payment_prosses' => 'paid']);
                       
-                 return redirect()->route('Shop.view')->with('success','Your payment is completed');
+                 return redirect()->route('OderPage')->with('success','Your payment is completed');
 
            }else{
                            return redirect()->back()->with('error','Your payment is not  completed ! error');

@@ -443,7 +443,7 @@
       <li><a href="{{route('SellerOrders')}}"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
       <li><a href="{{route('SellerCustomer.view')}}"><i class="fas fa-users"></i> <span>Customers</span></a></li>
       <li><a href="{{route('SellerPaymentPage.view')}}"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
-      <li><a href="#"><i class="fas fa-envelope"></i> <span>Messages</span></a></li>
+      <li><a href="{{route('SellerMessagePanal.view')}}"><i class="fas fa-envelope"></i> <span>Messages</span></a></li>
       <li><a href="#"><i class="fas fa-users"></i> <span>Profile</span></a></li>
       <li><a href="{{route('logout')}}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
     </ul>

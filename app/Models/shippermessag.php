@@ -15,4 +15,9 @@ class shippermessag extends Model
         'Order_id',
         'message',
     ];
+        public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+    
 }

@@ -10,7 +10,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <style>
@@ -192,7 +193,7 @@
   <div class="d-flex align-items-center flex-wrap">
     <div class="seller_balance mb-2">
       <i class="fas fa-wallet"></i>
-      Your payment $
+      Your balance $
       <span class="balance">20</span>
     </div>
     <button class="btn btn-primary ms-2 mb-2" data-bs-toggle="modal" data-bs-target="#addMethodModal">
@@ -336,7 +337,45 @@
         </div>
       </div>
     </div>
-
+<div class="modal fade" id="viewProductModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-eye me-2"></i> Product Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="productDetailsContent">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="productImage" src="" class="img-fluid rounded border hover-scale" alt="Product Image">
+                    </div>
+                    <div class="col-md-8">
+                        <h5 id="productName" class="fw-bold mb-3"></h5>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="price-tag fw-bold fs-4 me-3" id="productPrice"></span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary" id="productStock"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted small">SKU:</span>
+                            <span class="fw-semibold ms-2" id="productSKU"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted small">Category:</span>
+                            <span class="fw-semibold ms-2" id="productCategory"></span>
+                        </div>
+                        <div>
+                            <h6 class="mb-2">Description</h6>
+                            <p class="text-muted" id="productDescription"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Payment Methods Table -->
     <div class="card p-4">
       <div class="table-responsive">
@@ -346,7 +385,7 @@
               <th>#</th>
               <th>Method</th>
               <th>Account Title</th>
-              <th>Account Details</th>
+              <th>Account number</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -360,15 +399,16 @@
                   <i class="fas fa-mobile-alt me-2"></i>{{$Method->method}}
                 </span>
               </td>
-           <td>{{ Auth::user()->name }}</td>
-              <td>{{$Method->MobileNumber}}</td>
+           <td>{{$Method->AccountTitle}}</</td>
+              <td>{{$Method->AccountNumber}}</td>
               <td><span class="badge bg-success">Active</span></td>
               <td class="action-btns">
-                <button class="btn btn-sm btn-outline-primary me-2">
+                <button class="btn btn-sm btn-outline-primary me-2 updatePaymentMethodbtn" data-id="{{ $Method->id }}">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-danger">
-                  <i class="fas fa-trash-alt"></i>
+                <button class="btn btn-sm btn-outline-danger delete-payment-btn" data-id="{{ $Method->id }}">
+
+                  <i class="fas fa-trash-alt" ></i>
                 </button>
               </td>
             </tr>
@@ -397,63 +437,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-  $(document).ready(function() {
-    // Show/hide additional fields based on payment method
-    $('#method').change(function() {
-      $('.additional-fields').addClass('d-none');
-      const method = $(this).val();
-      
-      if (method === 'Bank Transfer') {
-        $('#bankFields').removeClass('d-none');
-      } else if (method === 'JazzCash' || method === 'EasyPaisa') {
-        $('#mobileFields').removeClass('d-none');
-      }
-    });
-    
-    // Form validation
-    const form = document.getElementById('paymentMethodForm');
-    
-    // Check if table is empty and show empty state
-    if ($('#paymentTable tbody tr').length === 0) {
-      $('#paymentTable').addClass('d-none');
-      $('#emptyState').removeClass('d-none');
-    }
-    
-    // IBAN validation
-    $('#iban').on('input', function() {
-      const iban = $(this).val().replace(/\s/g, '');
-      if (iban.length > 0 && !isValidIBAN(iban)) {
-        $(this).addClass('is-invalid');
-        $(this).next('.invalid-feedback').text('Please enter a valid IBAN number');
-      } else {
-        $(this).removeClass('is-invalid');
-      }
-    });
-    
-    // Mobile number validation
-    $('#mobileNumber').on('input', function() {
-      const mobile = $(this).val();
-      if (mobile.length > 0 && !isValidMobile(mobile)) {
-        $(this).addClass('is-invalid');
-        $(this).next('.invalid-feedback').text('Please enter a valid mobile number (e.g. 03001234567)');
-      } else {
-        $(this).removeClass('is-invalid');
-      }
-    });
-    
-    function isValidIBAN(iban) {
-      // Basic IBAN validation for Pakistan (PK)
-      return iban.length === 24 && iban.startsWith('PK');
-    }
-    
-    function isValidMobile(mobile) {
-      // Pakistani mobile number validation
-      const regex = /^((\+92)|(0092)|(0)|(92))[0-9]{10}$/;
-      return regex.test(mobile);
-    }
-  });
-</script>
 <script>
   $('#saveMethodBtn').click(function () {
     const form = $('#paymentMethodForm')[0];
@@ -511,7 +494,86 @@
         form.classList.add('was-validated');
     }
 });
-
+$(document).on('click', '.delete-payment-btn', function () {
+    var productId = $(this).data('id');
+    var $button = $(this);
+    var url = "{{ route('paymentDelete', ':id') }}".replace(':id', productId);
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                beforeSend: function () {
+                    $button.html('<i class="fas fa-spinner fa-spin"></i>').prop('disabled', true);
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $button.closest('tr').fadeOut(300, function () {
+                            $(this).remove();
+                        });
+                        Swal.fire('Deleted!', 'Product has been deleted.', 'success');
+                    } else {
+                        Swal.fire('Error!', response.message || 'Delete failed.', 'error');
+                        $button.html('<i class="fas fa-trash"></i>').prop('disabled', false);
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
+                    $button.html('<i class="fas fa-trash"></i>').prop('disabled', false);
+                }
+            });
+        }
+    });
+});
+</script>
+<script>
+  
+$(document).on('click', '.updatePaymentMethodbtn', function() {
+    var productId = $(this).data('id');
+    var url = '{{ route("updatePaymentMethodbtn", ":id") }}'.replace(':id', productId);
+    
+    // Show loading state
+    $('#productDetailsContent').html(`
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading product details...</p>
+        </div>
+    `);
+    
+    $('#viewProductModal').modal('show');
+    
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(response) {
+            $('#productDetailsContent').html(response);
+        },
+error: function(xhr) {
+    $('#productDetailsContent').html(`
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Failed to load product details. Please try again.<br>
+            <strong>Error:</strong> ${xhr.responseText}
+        </div>
+    `);
+}
+    });
+});
 </script>
 </body>
 </html>

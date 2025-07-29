@@ -35,6 +35,7 @@
               <div class="mb-3">
                 <label class="form-label">Name</label>
                 <input type="text" name="name" class="form-control shadow-sm" value="{{$student->name}}" readonly>
+                <input type="hidden" name="usrt_id"  value="{{$student->id}}">
               </div>
               <div class="mb-3">
                 <label class="form-label">Email</label>

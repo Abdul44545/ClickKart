@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SellerPaymetnController;
+use App\Http\Controllers\SellerMessageController;
 // Admin      ////////////////////////
 
 Route::get('login', [UserContrller::class, 'login'])->name('login');
@@ -60,7 +61,9 @@ Route::post('/SendMailTeacher', [SellerOrderController::class, 'SendMailTeacherF
 
 Route::get('SellerPaymentPage', [SellerPaymetnController::class, 'SellerPaymentPage'])->name('SellerPaymentPage.view');
 Route::post('/seller/payment-method/store', [SellerPaymetnController::class, 'store'])->name('seller.payment_method.store');
-
+Route::delete('/paymentDelete/{id}', [SellerPaymetnController::class, 'paymentDelete'])->name('paymentDelete');
+Route::get('/updatePaymentMethodbtn/{id}', [SellerPaymetnController::class, 'updatePaymentMethodbtn'])->name('updatePaymentMethodbtn');
+Route::put('/pageupdate/{id}', [SellerPaymetnController::class, 'pageupdate'])->name('pageupdate');
 
 
 
@@ -80,16 +83,15 @@ Route::get('/PaymentProssess/{id}', [YourController::class, 'show'])->name('Paym
 
 
 
-
+///  Selller Payment Panal      ///////////////////////////////////
 Route::post('/paymentPage', [PaymentController::class, 'paymentPage'])->name('submitPayment');
-
-
 Route::get('/OderPage', [OrderController::class, 'OderPage'])->name('OderPage');
-
-
 Route::post('/orders/{order}/send-message', [OrderController::class, 'sendMessage'])->name('orders.send-message');
 
 
 
 
+////// Seller Messages Panal
 
+
+Route::get('/SellerMessagePanal', [SellerMessageController::class, 'SellerMessagePanal'])->name('SellerMessagePanal.view');

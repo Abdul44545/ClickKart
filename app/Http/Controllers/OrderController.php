@@ -40,17 +40,21 @@ public function sendMessage(Request $request, $orderId)
         ]);
     }
     $order = Ordercompelete::findOrFail($orderId);
-
-    $base = new shippermessag;
+        $product = Product::find($order->product_id);
+        $getSellerId = $product->Submiter_id;
+       
+     $base = new shippermessag;
     $base->user_id = $order->user_id;  
     $base->product_id = $order->product_id;
     $base->Order_id = $order->id;
+    $base->seller_id=$getSellerId;
     $base->message = $request->message;
+    $base->status = "unread";
     $base->save(); 
 
     return response()->json([
         'success' => true,
-        'message' => 'Message sent successfully to the shipper.',
+        'message' => 'Message sent successfully to the shipper.' ,
     ]);
 }
 

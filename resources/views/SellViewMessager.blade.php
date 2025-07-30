@@ -1,92 +1,6 @@
-<div class="message-conversation">
-    <!-- Product Overview -->
-    <div class="product-overview-card">
-        <div class="product-visual">
-            @if($message->product && $message->product->image1)
-                <img src="{{ asset('storage/' . $message->product->image1) }}" 
-                     class="product-visual-image" 
-                     alt="Product Image"
-                     onerror="this.src='https://via.placeholder.com/400x300?text=Product+Image'">
-            @else
-                <div class="product-visual-empty">
-                    <i class="bi bi-box-seam"></i>
-                </div>
-            @endif
-        </div>
-        <div class="product-details">
-            <div class="conversation-meta">
-                <span class="conversation-status status-{{ $message->status }}">
-                    <i class="bi {{ $message->status === 'unread' ? 'bi-envelope-fill' : 'bi-envelope-open' }}"></i>
-                    {{ ucfirst($message->status) }}
-                </span>
-                <span class="conversation-time">
-                    <i class="bi bi-calendar"></i> {{ $message->created_at->format('M d, Y') }}
-                </span>
-            </div>
-            <h2 class="product-name">{{ $message->product->name ?? 'Product Inquiry' }}</h2>
-            <div class="product-specs">
-                <div class="spec-item">
-                    <span class="spec-label"><i class="bi bi-tag"></i> Category</span>
-                    <span class="spec-value">{{ $message->product->category ?? 'Not specified' }}</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label"><i class="bi bi-cash-stack"></i> Price</span>
-                    <span class="spec-value">${{ number_format($message->product->price ?? 0, 2) }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Conversation Thread -->
-    <div class="conversation-thread">
-        <!-- Buyer's Message -->
-        <div class="message-bubble received">
-            <div class="message-header">
-                <div class="user-avatar">
-                    <i class="bi bi-person-circle"></i>
-                </div>
-                <div class="user-info">
-                    <span class="user-name">{{ $message->buyer_name ?? 'Buyer' }}</span>
-                    <span class="user-role">Customer</span>
-                </div>
-            </div>
-            <div class="message-body">
-                {{ $message->message }}
-            </div>
-            <div class="message-footer">
-                <span class="timestamp">{{ $message->created_at->format('g:i A') }}</span>
-            </div>
-        </div>
-
-        <!-- Reply Form -->
-        <div class="reply-container">
-            <h3 class="reply-title">Your Response</h3>
-            <form id="messageReplyForm" class="reply-form" method="POST">
-                @csrf
-                <div class="form-field">
-                    <textarea name="reply_message" placeholder="Write your reply..." rows="5" required></textarea>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="send-button">
-                        <span>Send Message</span>
-                        <i class="bi bi-send-arrow-up"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Product Description -->
-    @if($message->product && $message->product->description)
-    <div class="product-full-description">
-        <h3 class="description-title">About This Product</h3>
-        <div class="description-text">
-            {{ $message->product->description }}
-        </div>
-    </div>
-    @endif
-</div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+ <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     .message-conversation {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -378,6 +292,98 @@
         }
     }
 </style>
+<div class="message-conversation">
+    <!-- Product Overview -->
+    <div class="product-overview-card">
+        <div class="product-visual">
+            @if($message->product && $message->product->image1)
+                <img src="{{ asset('storage/' . $message->product->image1) }}" 
+                     class="product-visual-image" 
+                     alt="Product Image"
+                     onerror="this.src='https://via.placeholder.com/400x300?text=Product+Image'">
+            @else
+                <div class="product-visual-empty">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+            @endif
+        </div>
+        <div class="product-details">
+            <div class="conversation-meta">
+                <span class="conversation-status status-{{ $message->status }}">
+                    <i class="bi {{ $message->status === 'unread' ? 'bi-envelope-fill' : 'bi-envelope-open' }}"></i>
+                    {{ ucfirst($message->status) }}
+                </span>
+                <span class="conversation-time">
+                    <i class="bi bi-calendar"></i> {{ $message->created_at->format('M d, Y') }}
+                </span>
+            </div>
+            <h2 class="product-name">{{ $message->product->name ?? 'Product Inquiry' }}</h2>
+            <div class="product-specs">
+                <div class="spec-item">
+                    <span class="spec-label"><i class="bi bi-tag"></i> Category</span>
+                    <span class="spec-value">{{ $message->product->category ?? 'Not specified' }}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label"><i class="bi bi-cash-stack"></i> Price</span>
+                    <span class="spec-value">${{ number_format($message->product->Price ?? 0, 2) }}</span>
+                </div>
+                 
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversation Thread -->
+    <div class="conversation-thread">
+        <!-- Buyer's Message -->
+        <div class="message-bubble received">
+            <div class="message-header">
+                <div class="user-avatar">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">{{ $message->buyer_name ?? 'Buyer' }}</span>
+                    <span class="user-role">Customer</span>
+                </div>
+            </div>
+            <div class="message-body">
+                {{ $message->message }}
+            </div>
+            <div class="message-footer">
+                <span class="timestamp">{{ $message->created_at->format('g:i A') }}</span>
+            </div>
+        </div>
+
+        <!-- Reply Form -->
+        <div class="reply-container">
+            <h3 class="reply-title">Your Response</h3>
+            <form id="messageReplyForm" class="reply-form" method="POST">
+                @csrf
+                <div class="form-field">
+                    <textarea name="reply_message" id="repllay_message" placeholder="Write your reply..." rows="5" required></textarea>
+                    <input type="hidden" name="messagerepy_id" id="messagerepy_id" value="{{ $message->id}}">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="send-button" id="addreplay">
+                        <span>Send Message</span>
+                        <i class="bi bi-send-arrow-up"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Description -->
+    @if($message->product && $message->product->description)
+    <div class="product-full-description">
+        <h3 class="description-title">About This Product</h3>
+        <div class="description-text">
+            {{ $message->product->description }}
+        </div>
+    </div>
+    @endif
+</div>
+
+
 
 <script>
 document.getElementById('messageReplyForm').addEventListener('submit', function(e) {
@@ -392,15 +398,7 @@ document.getElementById('messageReplyForm').addEventListener('submit', function(
     submitButton.disabled = true;
     
     // Simulate API call (replace with actual fetch)
-    setTimeout(() => {
-        // On success
-        alert('Your reply has been sent successfully!');
-        form.reset();
-        submitButton.innerHTML = originalButtonHTML;
-        submitButton.disabled = false;
-        
-        // In a real app, you would add the sent message to the conversation thread
-    }, 1500);
+    
 });
 
 // Add spinning animation
@@ -416,4 +414,63 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+$('#addreplay').click(function () {
+    const form = $('#messageReplyForm')[0];
+
+    if (form.checkValidity()) {
+        // Optional: Add loading spinner or disable button here
+        const submitButton = this;
+        const originalHTML = submitButton.innerHTML;
+        submitButton.innerHTML = '<span class="spin">⏳</span> Sending...';
+        submitButton.disabled = true;
+
+        let data = {
+            reply: $('#repllay_message').val(),
+            messagerepy_id: $('#messagerepy_id').val(),
+            _token: '{{ csrf_token() }}'
+        };
+
+        $.ajax({
+            url: "{{ route('SellerRepalyMessage') }}",
+            method: 'POST',
+            data: data,
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added!',
+                        text: response.message,
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+    window.location.reload();
+
+                    $('#repllay_message').val('');
+                }
+                submitButton.innerHTML = originalHTML;
+                submitButton.disabled = false;
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: xhr.responseJSON?.message || 'Something went wrong.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                submitButton.innerHTML = originalHTML;
+                submitButton.disabled = false;
+            }
+        });
+    } else {
+        form.classList.add('was-validated');
+    }
+});
+
 </script>

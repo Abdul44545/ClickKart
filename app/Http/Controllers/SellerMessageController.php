@@ -22,6 +22,16 @@ class SellerMessageController extends Controller
         $sellerId=Auth::id();
         $getMessages=shippermessag::with('product')->where('seller_id' , $sellerId)->get();
         return view('SelletrMessagepanal', ['Messages' => $getMessages]);
-
     }
+public function MessageViewSeller($id)
+{
+    $message = shippermessag::with('product')->findOrFail($id);
+    
+    // Mark the message as read
+    if($message->status === 'unread') {
+        $message->update(['status' => 'read']);
+    }
+
+    return view('SellViewMessager', compact('message'));
+}
 }

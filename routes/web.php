@@ -95,3 +95,4 @@ Route::post('/orders/{order}/send-message', [OrderController::class, 'sendMessag
 
 
 Route::get('/SellerMessagePanal', [SellerMessageController::class, 'SellerMessagePanal'])->name('SellerMessagePanal.view');
+Route::get('MessageViewSeller/{id}', [SellerMessageController::class, 'MessageViewSeller'])->name('MessageViewSeller');

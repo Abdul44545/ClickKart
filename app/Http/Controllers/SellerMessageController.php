@@ -48,6 +48,7 @@ public function MessageViewSeller($id)
         $base->user_id = $getData->user_id;
         $base->smessage_reply_id = $request->messagerepy_id;
         $base->message = $request->reply; 
+        $base->status  ="unread";
         $base->save();
 
         return response()->json([

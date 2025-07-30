@@ -45,10 +45,12 @@
         <div class="header-actions">
        
             <div class="action-buttons">
-                <a href="/wishlist" class="action-button">
+                @if(Auth::check())
+                <a href="{{route('UserNotification')}}" class="action-button">
                     <i class="far fa-heart"></i>
-                    <span class="badge">2</span>
+                    <span class="badge">{{count($getNiti)}}</span>
                 </a>
+                @endif
                 <a href="/account" class="action-button">
                     <i class="far fa-user"></i>
                 </a>

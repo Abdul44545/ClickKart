@@ -97,3 +97,9 @@ Route::post('/orders/{order}/send-message', [OrderController::class, 'sendMessag
 Route::get('/SellerMessagePanal', [SellerMessageController::class, 'SellerMessagePanal'])->name('SellerMessagePanal.view');
 Route::get('MessageViewSeller/{id}', [SellerMessageController::class, 'MessageViewSeller'])->name('MessageViewSeller');
 Route::post('SellerRepalyMessage', [SellerMessageController::class, 'SellerRepalyMessage'])->name('SellerRepalyMessage');
+
+/////// User Notification system 
+
+Route::get('UserNotification', [WebsiteController::class, 'UserNotification'])->name('UserNotification');
+Route::get('/notifications/read-all', [WebsiteController::class, 'markAllRead'])->name('notifications.readAll');
+Route::get('/notifications/delete-all', [WebsiteController::class, 'deleteAll'])->name('notifications.deleteAll');

@@ -60,7 +60,10 @@ function loginChek(Request $request)
             return redirect()->route('SellerPanal')->with('success', 'Welcome Seller');
         } elseif ($user->role == 'buyer') {
             return redirect()->route('Click_Kard.view')->with('success', 'Welcome Buyer');
-        } else {
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('AdminPanal')->with('success', 'Welcome Seller');
+        }
+        else {
             Auth::logout();
             return redirect()->back()->with('error', 'Invalid role!');
         }

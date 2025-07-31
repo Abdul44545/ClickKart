@@ -51,9 +51,7 @@
                     <span class="badge">{{count($getNiti)}}</span>
                 </a>
                 @endif
-                <a href="/account" class="action-button">
-                    <i class="far fa-user"></i>
-                </a>
+         
                 <a href="{{route('SellectCardPage.products')}}" class="action-button cart-button">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="badge"></span>

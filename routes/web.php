@@ -12,6 +12,7 @@ use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SellerPaymetnController;
 use App\Http\Controllers\SellerMessageController;
+use App\Http\Controllers\ProfileController;
 // Admin      ////////////////////////
 
 Route::get('login', [UserContrller::class, 'login'])->name('login');
@@ -103,3 +104,13 @@ Route::post('SellerRepalyMessage', [SellerMessageController::class, 'SellerRepal
 Route::get('UserNotification', [WebsiteController::class, 'UserNotification'])->name('UserNotification');
 Route::get('/notifications/read-all', [WebsiteController::class, 'markAllRead'])->name('notifications.readAll');
 Route::get('/notifications/delete-all', [WebsiteController::class, 'deleteAll'])->name('notifications.deleteAll');
+  
+/////// Seller User Profile 
+
+Route::get('SellerProflePage', [ProfileController::class, 'SellerProflePage'])->name('SellerProflePage');
+Route::post('save_profile_Seller', [ProfileController::class, 'save_profile_Seller'])->name('save_profile_Seller');
+
+
+///// Seller Dashboard  
+
+// web.php

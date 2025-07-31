@@ -35,4 +35,7 @@ public function deleteAll()
     repalce::where('user_id', Auth::id())->delete();
     return response()->json(['message' => 'All notifications deleted.']);
 }
+ function UserProflePage(){
+    return view('WebProfilePage');
+ }
 }

@@ -13,6 +13,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SellerPaymetnController;
 use App\Http\Controllers\SellerMessageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminPaymentController;
 // Admin      ////////////////////////
 
 Route::get('login', [UserContrller::class, 'login'])->name('login');
@@ -30,6 +32,9 @@ Route::get('/productupdateAdmin/{id}', [ProductsController::class, 'productupdat
 Route::put('/AdminUpdateForm/{id}', [ProductsController::class, 'update'])->name('AdminProductUpdate');
 Route::get('/admin/products/search', [ProductsController::class, 'search'])->name('admin.products.search');
 Route::post('/product/update/{id}', [ProductsController::class, 'updateProduct'])->name('product.update');
+Route::get('AdminOrderPanal', [AdminOrderController::class, 'AdminOrderPanal'])->name('AdminOrderPanal');
+Route::get('AdminCustomer', [CustomerController::class, 'AdminCustomer'])->name('AdminCustomer.view');
+Route::get('/Admin/customers/search', [CustomerController::class, 'AdminsearchCustomers'])->name('Admin.customers.search');
 
 
 
@@ -66,7 +71,14 @@ Route::delete('/paymentDelete/{id}', [SellerPaymetnController::class, 'paymentDe
 Route::get('/updatePaymentMethodbtn/{id}', [SellerPaymetnController::class, 'updatePaymentMethodbtn'])->name('updatePaymentMethodbtn');
 Route::put('/pageupdate/{id}', [SellerPaymetnController::class, 'pageupdate'])->name('pageupdate');
 
+ //////////   Admin Payment Proccess   
 
+Route::get('AdminPaymentPage', [AdminPaymentController::class, 'AdminPaymentPage'])->name('AdminPaymentPage.view');
+Route::post('tWidthraRequestStore', [SellerPaymetnController::class, 'tWidthraRequestStore'])->name('tWidthraRequestStore');
+Route::get('AdminPaymentView/{id}', [AdminPaymentController::class, 'AdminPaymentView'])->name('AdminPaymentView');
+
+Route::post('/admin/payments/approve/{id}', [AdminPaymentController::class, 'adminpaymentsapprove'])->name('adminpaymentsapprove');
+Route::post('/admin/payments/reject/{id}', [AdminPaymentController::class, 'adminpaymentsreject'])->name('adminpaymentsreject');
 
 
 // Website      //////////////////////////////

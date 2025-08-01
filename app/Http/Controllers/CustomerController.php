@@ -95,5 +95,77 @@ public function searchCustomers(Request $request)
      
         return view('customerOrderView',['information'=>$getOrders]);
   }
+  function AdminCustomer(){
+  if (!Auth::check()) {
+        return back()->with('error', 'Please login');
+    }
+
+    $sellerId = Auth::id();
+
+    // تمام آرڈرز حاصل کریں
+    $orders = Ordercompelete::with(['user', 'shipping'])
+     
+        ->get();
+
+    // یوزرز کو گروپ کر کے آرڈر گنیں
+    $grouped = $orders->groupBy('user_id')->map(function ($group) {
+        $order = $group->first();
+        return [
+            'name' => $order->user->name ?? 'N/A',
+            'email' => $order->user->email ?? 'N/A',
+            'city' => $order->shipping->City ?? 'N/A',
+            'phone' => $order->shipping->phone_number ?? 'N/A',
+            'orders_count' => $group->count(),
+            'user_id' => $order->user_id,
+        ];
+    })->values();
+
+    // پھر manually pagination کریں
+    $perPage = 10;
+    $page = request()->get('page', 1);
+    $paginatedCustomers = new \Illuminate\Pagination\LengthAwarePaginator(
+        $grouped->forPage($page, $perPage),
+        $grouped->count(),
+        $perPage,
+        $page,
+        ['path' => request()->url(), 'query' => request()->query()]
+    );
+
+    return view('AdminCustamerPage', ['customers' => $paginatedCustomers]);
+  }
+  function AdminsearchCustomers(Request $request){
+ if (!Auth::check()) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+
+    $search = $request->input('query');
+
+    $orders = Ordercompelete::with(['user', 'shipping'])
+       
+        ->whereHas('user', function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        })
+        ->get();
+
+ $customers = $orders->groupBy('user_id')->map(function ($group) {
+    $firstOrder = $group->first();
+    $order = $group->first();
+    return [
+        'name' => $firstOrder->user->name ?? 'N/A',
+        'email' => $firstOrder->user->email ?? 'N/A',
+        'city' => $firstOrder->shipping->City ?? 'N/A',
+        'phone' => $firstOrder->shipping->phone_number ?? 'N/A',
+        'orders_count' => $group->count(),
+        'user_id' => $order->user_id, // ✅ IDs as array
+
+    ];
+})->values();
+
+
+    return response()->json(['customers' => $customers]);
 }
+
+  }
 

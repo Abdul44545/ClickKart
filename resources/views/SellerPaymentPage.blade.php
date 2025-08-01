@@ -194,7 +194,7 @@
     <div class="seller_balance mb-2">
       <i class="fas fa-wallet"></i>
       Your balance $
-      <span class="balance">20</span>
+      <span class="balance" id="crountBalance">{{$totalPayment}}</span>
     </div>
     <button class="btn btn-primary ms-2 mb-2" data-bs-toggle="modal" data-bs-target="#addMethodModal">
       <i class="fas fa-plus me-2"></i>Add New Method
@@ -275,51 +275,35 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addMethodModalLabel">Add Payment Method</h5>
+            <h5 class="modal-title" id="addMethodModalLabel">Withdrawel Request</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form id="paymentMethodForm" novalidate>
+            <form id="paymentWidthraForm" novalidate>
               <div class="mb-3">
                 <label for="method" class="form-label">Payment Method <span class="text-danger">*</span></label>
                 <select class="form-select" id="method" required>
                   <option value="" selected disabled>Select payment method</option>
-                  <option value="Bank Transfer">My Payment</option>
-                  <option value="JazzCash">My bank</option>
-                  <option value="EasyPaisa">My request</option>
+                  @foreach ($Methods as $method)
+                  <option value="{{$method->id}}">{{$method->method}}</option>
+                  @endforeach
                 </select>
                 <div class="invalid-feedback">Please select a payment method</div>
               </div>
               
               <div class="mb-3">
-                <label for="accountTitle" class="form-label">Account Title <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="accountTitle" required>
+                <label for="accountTitle" class="form-label">Withdrawel Ammount <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="accountNumber" name="amount" required>
+
                 <div class="invalid-feedback">Please enter account title</div>
               </div>
               
-              <div class="mb-3">
-                <label for="accountNumber" class="form-label">Account Number <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="accountNumber" required>
-                <div class="invalid-feedback">Please enter account number</div>
-              </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label">Description (Optional)</label>
+                  <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter any additional details..."></textarea>
+                </div>
               
-              <!-- Additional fields based on payment method -->
-              <div id="bankFields" class="additional-fields d-none">
-                <div class="mb-3">
-                  <label for="bankName" class="form-label">Bank Name <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="bankName">
-                  <div class="invalid-feedback">Please enter bank name</div>
-                </div>
-                <div class="mb-3">
-                  <label for="iban" class="form-label">IBAN Number <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="iban" placeholder="PKXX XXXX XXXX XXXX XXXX XXXX">
-                  <div class="invalid-feedback">Please enter valid IBAN</div>
-                </div>
-                <div class="mb-3">
-                  <label for="branchCode" class="form-label">Branch Code</label>
-                  <input type="text" class="form-control" id="branchCode">
-                </div>
-              </div>
+    
               
               <div id="mobileFields" class="additional-fields d-none">
                 <div class="mb-3">
@@ -332,7 +316,8 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="saveMethodBtn">Save Method</button>
+            <button type="button" id="saveWithdrawalBtn" class="btn btn-success">Save Withdrawal</button>
+
           </div>
         </div>
       </div>
@@ -371,7 +356,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-secondary rounded-pill" id="widthraREquest" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -379,7 +364,8 @@
     <!-- Payment Methods Table -->
     <div class="card p-4">
       <div class="table-responsive">
-        <table class="table table-hover align-middle" id="paymentTable">
+       <table class="table table-hover align-middle" id="paymentMethodsTable">
+
           <thead>
             <tr>
               <th>#</th>
@@ -431,7 +417,47 @@
             <button class="btn btn-primary ms-2 mb-2" data-bs-toggle="modal" data-bs-target="#addrequestbtn" style="float: right ; margin-right:20px" >
       <i class="fas fa-plus me-2"></i>Request Withdrawal
     </button>
+    <br>
+    <br>
+
+    <br>
+  <h2 class="section-title">Reqeusts Data</h2>
+
+  <div class="table-responsive">
+       <table class="table table-hover align-middle" id="withdrawalRequestsTable">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Acount</th>
+              <th>Account Title</th>
+              <th>Account number</th>
+              <th>amount</th>
+              <th>status</th>
+            </tr>
+          </thead>
+          <tbody>
+      @foreach($Onrequested as $Method)
+  <tr>
+    <td>{{$Method->id}}</td>
+    <td>
+      <span class="method-badge jazzcash-badge">
+        <i class="fas fa-mobile-alt me-2"></i>{{$Method->paymentinfo->method}}
+      </span>
+    </td>
+    <td>{{$Method->paymentinfo->AccountTitle}}</td>
+    <td>{{$Method->paymentinfo->AccountNumber}}</td>
+    <td>{{$Method->WithdrawelAmount}}</td>
+    <td>
+      <span class="badge bg-success">{{$Method->status}}</span>
+    </td>
+  </tr>
+  @endforeach
+          </tbody>
+        </table>
+      </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -574,6 +600,85 @@ error: function(xhr) {
 }
     });
 });
+
+$('#saveWithdrawalBtn').click(function () {
+    const form = $('#paymentWidthraForm')[0];
+
+    if (form.checkValidity()) {
+        let data = {
+            method_id: $('#paymentWidthraForm #method').val(),
+            amount: $('#paymentWidthraForm #accountNumber').val(),
+            description: $('#paymentWidthraForm #description').val(),
+            _token: '{{ csrf_token() }}'
+        };
+
+        $.ajax({
+            url: "{{ route('tWidthraRequestStore') }}",
+            method: 'POST',
+            data: data,
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added!',
+                        text: response.message,
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+
+                    // Update balance
+                    $('#crountBalance').html(response.data);
+
+                    // Hide modal and reset form
+                    $('#addrequestbtn').modal('hide');
+                    $('#paymentWidthraForm')[0].reset();
+                    $('.additional-fields').addClass('d-none');
+                    form.classList.remove('was-validated');
+
+                    // Generate HTML rows from Onrequested
+                    let rows = '';
+                    response.Onrequested.forEach((method, index) => {
+                        rows += `
+                            <tr>
+                                <td>${method.id}</td>
+                                <td>
+                                    <span class="method-badge jazzcash-badge">
+                                        <i class="fas fa-mobile-alt me-2"></i>${method.paymentinfo.method}
+                                    </span>
+                                </td>
+                                <td>${method.paymentinfo.AccountTitle}</td>
+                                <td>${method.paymentinfo.AccountNumber}</td>
+                                <td>${method.WithdrawelAmount}</td>
+                                <td>
+                                    <span class="badge bg-success">${method.status}</span>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    // Inject into table body
+                    $('#paymentTable tbody').html(rows);
+                }
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: xhr.responseJSON?.message || 'Something went wrong.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+    } else {
+        form.classList.add('was-validated');
+    }
+});
+
 </script>
 </body>
 </html>

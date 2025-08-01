@@ -453,13 +453,43 @@ foreach($graphOrders as $order) {
     </div>
   </div>
   <div class="filter-buttons">
-  <button class="btn btn-outline-primary chart-filter active" data-filter="weekly">Weekly</button>
-  <button class="btn btn-outline-primary chart-filter" data-filter="monthly">Monthly</button>
-  <button class="btn btn-outline-primary chart-filter" data-filter="yearly">Yearly</button>
-</div>
-<div id="chartContainer" style="height: 370px; width: 100%;"></div>
-  <!-- Compact Order Trends Chart -->
+ </div>
+<div class="content-row">
+  <div class="card wide chart-card">
+    <div class="card-header">
+      <h2>Revenue Analytics</h2>
+      <div class="header-actions">
 
+        
+      </div>
+    </div>
+    <div class="chart-container">
+      <div id="stylishChart" style="height: 380px; width: 100%;"></div>
+    </div>
+    <div class="chart-footer">
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="legend-color" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></span>
+          <span class="legend-label">Revenue</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></span>
+          <span class="legend-label">Orders</span>
+        </div>
+      </div>
+      <div class="chart-summary">
+        <div class="summary-item">
+          <span class="summary-value">2</span>
+          <span class="summary-label">Total Revenue</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-value">20</span>
+          <span class="summary-label">Total Orders</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- Orders Table -->
   <div class="table-container">
@@ -597,34 +627,160 @@ foreach($graphOrders as $order) {
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-  <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
-  <script>
-    window.onload = function () {
-      var chart = new CanvasJS.Chart("chartContainer", {
-        theme: "light2",
-        animationEnabled: true,
-        zoomEnabled: true,
-        title: {
-          text: "Fees Amount Over Records"
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  const revenueData = <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>;
+  
+  const amounts = revenueData.map(item => item.y);
+  
+  // Create stylish chart
+  const options = {
+    series: [{
+      name: 'Revenue',
+      data: amounts,
+      color: '#667eea'
+    }],
+    chart: {
+      type: 'area',
+      height: 350,
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true
+        }
+      },
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 800,
+        animateGradually: {
+          enabled: true,
+          delay: 150
         },
-        axisX: {
-          title: "Record Number"
+        dynamicAnimation: {
+          enabled: true,
+          speed: 350
+        }
+      }
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 3,
+      colors: ['#667eea']
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.3,
+        stops: [0, 90, 100]
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    markers: {
+      size: 5,
+      colors: ['#667eea'],
+      strokeColors: '#fff',
+      strokeWidth: 2,
+      hover: {
+        size: 7
+      }
+    },
+    xaxis: {
+   
+      labels: {
+        style: {
+          colors: '#6b7280',
+          fontSize: '12px'
+        }
+      },
+      axisBorder: {
+        show: false
+      },
+      axisTicks: {
+        show: false
+      }
+    },
+    yaxis: {
+      labels: {
+        formatter: function(value) {
+          return '$' + value.toLocaleString();
         },
-        axisY: {
-          title: "Amount (Rs.)",
-          includeZero: true
-        },
-        data: [
-          {
-            type: "area",
-            dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
-          }
-        ]
+        style: {
+          colors: '#6b7280',
+          fontSize: '12px'
+        }
+      }
+    },
+    grid: {
+      borderColor: '#f3f4f6',
+      strokeDashArray: 4,
+      padding: {
+        top: 20,
+        right: 20,
+        bottom: 0,
+        left: 20
+      }
+    },
+    tooltip: {
+      y: {
+        formatter: function(value) {
+          return '$' + value.toLocaleString()
+        }
+      },
+      style: {
+        fontSize: '14px'
+      },
+      marker: {
+        show: true
+      }
+    }
+  };
+
+  const chart = new ApexCharts(document.querySelector("#stylishChart"), options);
+  chart.render();
+
+  // Filter buttons functionality
+  document.querySelectorAll('.btn-filter').forEach(button => {
+    button.addEventListener('click', function() {
+      document.querySelectorAll('.btn-filter').forEach(btn => {
+        btn.classList.remove('active');
       });
-      chart.render();
-    };
-  </script>
+      this.classList.add('active');
+      
+      // Here you would typically make an AJAX call to get filtered data
+      // For demo, we'll just update the chart with sample data
+      const filter = this.dataset.filter;
+      let newData = [];
+      
+      if(filter === 'weekly') {
+        newData = amounts.slice(0, 7);
+      } else if(filter === 'monthly') {
+        newData = amounts.slice(0, 30);
+      } else {
+        newData = amounts;
+      }
+      
+      chart.updateSeries([{
+        data: newData
+      }]);
+    });
+  });
+});
+
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>

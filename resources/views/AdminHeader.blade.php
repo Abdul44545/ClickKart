@@ -451,34 +451,30 @@
     </li>
 
     <li>
-      <a href="#">
+      <a href="{{route('AdminOrderPanal')}}">
         <i class="fas fa-shopping-cart"></i> <span>Orders</span>
       </a>
     </li>
 
     <li>
-      <a href="#">
+      <a href="{{route('AdminCustomer.view')}}">
         <i class="fas fa-users"></i> <span>Customers</span>
       </a>
     </li>
 
-    <li>
-      <a href="#">
-        <i class="fas fa-tags"></i> <span>Categories</span>
-      </a>
-    </li>
+
 
     <li>
-      <a href="#">
+      <a href="{{route('AdminPaymentPage.view')}}">
         <i class="fas fa-credit-card"></i> <span>Payments</span>
       </a>
     </li>
-
     <li>
-      <a href="#">
-        <i class="fas fa-star"></i> <span>Reviews</span>
+      <a href="{{route('AdminPaymentPage.view')}}">
+        <i class="fas fa-user"></i> <span>Profile</span>
       </a>
     </li>
+
 
     <li>
       <a href="#">
